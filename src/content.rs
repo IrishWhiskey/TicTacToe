@@ -109,7 +109,7 @@ impl Grid {
     }
 
     fn check(&self) -> Option<&CellContent> {
-        for i in 0..2 {
+        for i in 0..3 {
             if self.check_col(i) {
                 return Some(&self.content[0][i]);
             }

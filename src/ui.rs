@@ -1,6 +1,6 @@
 //!module that handles the ui of the game
-use std::io;
 use crate::content::Grid;
+use std::io::{self, Write};
 
 fn read_index() -> Result<u32, &'static str> {
     let mut inp = String::new();
@@ -22,11 +22,17 @@ pub fn get_player_move(player_id: u32) -> Result<(u32, u32), &'static str> {
     let c: u32;
 
     print!("Player{} give your move row: ", player_id+1);
+    io::stdout().flush().unwrap();
     r = read_index()?;
     print!("Player{} give your move column: ", player_id+1);
+    io::stdout().flush().unwrap();
     c = read_index()?;
 
     Ok((r, c))
+}
+
+pub fn display_winner(winner: u32) {
+    println!("The winner is player{}", winner);
 }
 
 pub fn print_grid(grid: &Grid)
@@ -41,4 +47,5 @@ pub fn print_grid(grid: &Grid)
         }
         println!("|\n  +---+---+---+");
     }
+    println!("");
 }
