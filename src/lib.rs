@@ -3,7 +3,7 @@ pub mod ui;
 
 pub fn run() {
     let mut grid = content::Grid::new();
-    grid.player1_move(1, 2);
+    grid.player_move(1, 2, 0);
     ui::print_grid(&grid);
 }
 
