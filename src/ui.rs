@@ -2,6 +2,12 @@
 use crate::content::Grid;
 use std::io::{self, Write};
 
+pub enum MenuChoice {
+    SinglePlayer,
+    MultiPlayer,
+    Quit
+}
+
 fn read_index() -> Result<u32, &'static str> {
     let mut inp = String::new();
     if let Err(_) = io::stdin().read_line(&mut inp) {
@@ -10,6 +16,40 @@ fn read_index() -> Result<u32, &'static str> {
     match inp.trim().parse() {
         Ok(ans) => Ok(ans),
         Err(_) => Err("Input in not unsigned integer!"),
+    }
+}
+
+fn read_menu_choice() -> Result<MenuChoice, &'static str> {
+    print!("Enter your choice: ");
+    io::stdout().flush().unwrap();
+    let choice = read_index()?;
+    if choice == 1 {
+        return Ok(MenuChoice::SinglePlayer);
+    }
+    if choice == 2 {
+        return Ok(MenuChoice::MultiPlayer);
+    }
+    if choice == 3 {
+        return Ok(MenuChoice::Quit);
+    }
+    Err("Invalid choice!")
+}
+
+fn display_menu() {
+    println!("Welcome to TicTacToe!");
+    println!("Main Menu");
+    println!("1. Singleplayer");
+    println!("2. Multiplayer");
+    println!("3. Quit");
+}
+
+pub fn run_menu() -> MenuChoice {
+    loop {
+        display_menu();
+        match read_menu_choice() {
+            Ok(m) => return m,
+            Err(e) => println!("Error with menu choice: {}", e),
+        }
     }
 }
 

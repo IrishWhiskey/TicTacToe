@@ -1,7 +1,7 @@
 pub mod content;
 pub mod ui;
 
-pub fn run() {
+fn run_multiplayer() {
     let mut grid = content::Grid::new();
     let mut player_id = 0;
     let mut pmove: (u32, u32);
@@ -27,6 +27,19 @@ pub fn run() {
 
     ui::print_grid(&grid);
     ui::display_winner(grid.winner().unwrap()+1);
+}
+
+fn run_singleplayer() {
+    println!("SinglePlayer game...");
+}
+
+pub fn run()
+{
+    match ui::run_menu() {
+        ui::MenuChoice::SinglePlayer => run_singleplayer(),
+        ui::MenuChoice::MultiPlayer => run_multiplayer(),
+        ui::MenuChoice::Quit => (),
+    }
 }
 
 #[cfg(test)]
