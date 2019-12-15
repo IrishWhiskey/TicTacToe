@@ -1,15 +1,16 @@
-pub mod content;
 pub mod ui;
+pub mod content;
+pub mod player;
 
 fn run_multiplayer() {
     let mut grid = content::Grid::new();
-    let mut player_id = 0;
+    let mut cur_player = player::Player::P1;
     let mut pmove;
 
     while grid.winner().is_none() {
         ui::display_grid(&grid);
 
-        match ui::get_player_move(player_id) {
+        match ui::get_player_move(cur_player) {
             Ok(m) =>  {pmove = m;}
             Err(e) => {
                 println!("Error reading player move: {}", e);
@@ -17,16 +18,16 @@ fn run_multiplayer() {
             }
         }
 
-        if let Err(e) = grid.player_move(pmove, player_id) {
+        if let Err(e) = grid.player_move(pmove, cur_player) {
             println!("Error updating grid: {}", e);
             continue;
         }
 
-        player_id = 1-player_id;
+        cur_player = player::get_next_player(cur_player);
     }
 
     ui::display_grid(&grid);
-    ui::display_winner(grid.winner().unwrap()+1);
+    ui::display_winner(grid.winner().unwrap());
 }
 
 fn run_singleplayer() {

@@ -1,6 +1,7 @@
 //!module that handles the ui of the game
 use std::io::{self, Write};
-use crate::content::{Grid, Coordinate, MenuChoice};
+use crate::content::*;
+use crate::player::{Player, get_player_id};
 
 fn read_index() -> Result<u32, &'static str> {
     let mut inp = String::new();
@@ -47,26 +48,32 @@ pub fn run_menu() -> MenuChoice {
     }
 }
 
-pub fn get_player_move(player_id: u32) -> Result<Coordinate, &'static str> {
-    if player_id > 1 {
-        panic!("Invalid player id!");
-    }
-
+pub fn get_player_move(player: Player) -> Result<Coordinate, &'static str> {
     let r: u32;
     let c: u32;
+    let player_id = get_player_id(player);
 
-    print!("Player{} give your move row: ", player_id+1);
+    print!("Player{} give your move row: ", player_id);
     io::stdout().flush().unwrap();
     r = read_index()?;
-    print!("Player{} give your move column: ", player_id+1);
+    print!("Player{} give your move column: ", player_id);
     io::stdout().flush().unwrap();
     c = read_index()?;
 
     Coordinate::new(r as usize, c as usize)
 }
 
-pub fn display_winner(winner: u32) {
-    println!("The winner is player{}", winner);
+pub fn display_winner(player: Player) {
+    let player_id = get_player_id(player);
+    println!("The winner is Player{}", player_id);
+}
+
+fn cell_to_symbol(cell: Cell) -> char {
+    match cell.0 {
+        Some(Player::P1) => 'X',
+        Some(Player::P2) => 'O',
+        None => ' ',
+    }
 }
 
 pub fn display_grid(grid: &Grid)
@@ -77,7 +84,8 @@ pub fn display_grid(grid: &Grid)
     for i in 0..3 {
         print!("{} ", i);
         for j in 0..3 {
-            print!("| {} ", grid.cell_content(Coordinate::new(i, j).unwrap()));
+            let cell = grid.cell_content(Coordinate::new(i, j).unwrap());
+            print!("| {} ", cell_to_symbol(cell));
         }
         println!("|\n  +---+---+---+");
     }

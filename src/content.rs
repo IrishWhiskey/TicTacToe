@@ -1,12 +1,6 @@
 //!module that handles internal data representation
 
-///A cell contains either a placeholder or nothing(Nil)
-#[derive(PartialEq, Copy, Clone)]
-enum CellContent {
-    Ph1,
-    Ph2,
-    Nil,
-}
+use crate::player::Player;
 
 pub enum MenuChoice {
     SinglePlayer,
@@ -19,8 +13,11 @@ pub struct Coordinate {
     column: usize,
 }
 
+#[derive(PartialEq, Copy, Clone)]
+pub struct Cell(pub Option<Player>);
+
 pub struct Grid {
-    content: [[CellContent; 3]; 3],
+    content: [[Cell; 3]; 3],
 }
 
 impl Coordinate {
@@ -37,40 +34,22 @@ impl Coordinate {
 
 impl Grid {
     pub fn new() -> Grid {
-        let c = [[CellContent::Nil; 3]; 3];
+        let c = [[Cell(None); 3]; 3];
         Grid {
             content: c,
         }
     }
 
-    pub fn cell_content(&self, cell: Coordinate) -> char {
-        match &self.content[cell.row][cell.column] {
-            CellContent::Ph1 => 'X',
-            CellContent::Ph2 => 'O',
-            CellContent::Nil => ' ',
-        }
+    pub fn cell_content(&self, cell: Coordinate) -> Cell {
+        (&self).content[cell.row][cell.column]
     }
 
-    fn update_cell(&mut self, r: usize, c: usize, ph: CellContent) -> Result<(), &str> {
-        if self.content[r][c] != CellContent::Nil {
+    pub fn player_move(&mut self, cell: Coordinate, player: Player) -> Result<(), &str> {
+        if self.content[cell.row][cell.column].0.is_some() {
             return Err("non empty cell");
         }
-        self.content[r][c] = ph;
-        Ok(())
-    }
 
-    pub fn player_move(&mut self, cell: Coordinate, player_id: u32) -> Result<(), &str> {
-        if player_id > 1 {
-            panic!("Invalid player id!");
-        }
-
-        let place_holder = if player_id == 0 {
-            CellContent::Ph1
-        } else {
-            CellContent::Ph2
-        };
-
-        self.update_cell(cell.row, cell.column, place_holder)?;
+        self.content[cell.row][cell.column].0 = Some(player);
         Ok(())
     }
 
@@ -79,7 +58,7 @@ impl Grid {
             panic!("Row index out of bound!");
         }
 
-        if self.content[r][0] != CellContent::Nil {
+        if self.content[r][0] != Cell(None) {
             if self.content[r][0] == self.content[r][1] &&
                 self.content[r][1] == self.content[r][2] {
                     return true;
@@ -94,7 +73,7 @@ impl Grid {
             panic!("Column index out of bound!");
         }
 
-        if self.content[0][c] != CellContent::Nil {
+        if self.content[0][c] != Cell(None) {
             if self.content[0][c] == self.content[1][c] &&
                 self.content[1][c] == self.content[2][c] {
                     return true;
@@ -105,7 +84,7 @@ impl Grid {
     }
 
     fn check_diagonals(&self) -> bool {
-        if self.content[1][1] != CellContent::Nil {
+        if self.content[1][1] != Cell(None) {
             if self.content[0][0] == self.content[1][1] &&
                 self.content[1][1] == self.content[2][2] {
                     return true;
@@ -120,30 +99,26 @@ impl Grid {
         false
     }
 
-    fn check(&self) -> Option<&CellContent> {
+    fn check(&self) -> Option<Player> {
         for i in 0..3 {
             if self.check_col(i) {
-                return Some(&self.content[0][i]);
+                return self.content[0][i].0;
             }
 
             if self.check_row(i) {
-                return Some(&self.content[i][0]);
+                return self.content[i][0].0;
             }
         }
 
         if self.check_diagonals() {
-            return Some(&self.content[1][1]);
+            return self.content[1][1].0;
         }
 
         None
     }
 
-    pub fn winner(&self) -> Option<u32> {
-        match self.check() {
-            Some(CellContent::Ph1) => Some(0),
-            Some(CellContent::Ph2) => Some(1),
-            _ => None,
-        }
+    pub fn winner(&self) -> Option<Player> {
+        self.check()
     }
 }
 
