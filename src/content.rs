@@ -8,6 +8,12 @@ enum CellContent {
     Nil,
 }
 
+pub enum MenuChoice {
+    SinglePlayer,
+    MultiPlayer,
+    Quit
+}
+
 pub struct Coordinate {
     row: usize,
     column: usize,

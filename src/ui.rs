@@ -1,12 +1,6 @@
 //!module that handles the ui of the game
 use std::io::{self, Write};
-use crate::content::{Grid, Coordinate};
-
-pub enum MenuChoice {
-    SinglePlayer,
-    MultiPlayer,
-    Quit
-}
+use crate::content::{Grid, Coordinate, MenuChoice};
 
 fn read_index() -> Result<u32, &'static str> {
     let mut inp = String::new();

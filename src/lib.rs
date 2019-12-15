@@ -35,10 +35,12 @@ fn run_singleplayer() {
 
 pub fn run()
 {
-    match ui::run_menu() {
-        ui::MenuChoice::SinglePlayer => run_singleplayer(),
-        ui::MenuChoice::MultiPlayer => run_multiplayer(),
-        ui::MenuChoice::Quit => (),
+    loop {
+        match ui::run_menu() {
+            content::MenuChoice::SinglePlayer => run_singleplayer(),
+            content::MenuChoice::MultiPlayer => run_multiplayer(),
+            content::MenuChoice::Quit => break,
+        }
     }
 }
 
