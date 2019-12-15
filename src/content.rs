@@ -1,35 +1,44 @@
 //!module that handles internal data representation
 
 ///A cell contains either a placeholder or nothing(Nil)
-#[derive(PartialEq)]
+#[derive(PartialEq, Copy, Clone)]
 enum CellContent {
     Ph1,
     Ph2,
     Nil,
 }
 
+pub struct Coordinate {
+    row: usize,
+    column: usize,
+}
+
 pub struct Grid {
     content: [[CellContent; 3]; 3],
 }
 
+impl Coordinate {
+    pub fn new(r: usize, c: usize) -> Result<Coordinate, &'static str> {
+        if (r > 2) || (c > 2) {
+            return Err("row or column index out of bound");
+        }
+        Ok(Coordinate {
+            row: r,
+            column: c,
+        })
+    }
+}
+
 impl Grid {
     pub fn new() -> Grid {
-        let c = [
-        [CellContent::Nil, CellContent::Nil, CellContent::Nil],
-        [CellContent::Nil, CellContent::Nil, CellContent::Nil],
-        [CellContent::Nil, CellContent::Nil, CellContent::Nil],
-        ];
+        let c = [[CellContent::Nil; 3]; 3];
         Grid {
             content: c,
         }
     }
 
-    pub fn cell_content(&self, r: usize, c: usize) -> char {
-        if (r > 2) || (c > 2) {
-            panic!("Cannot get cell content, row or column index out of bound");
-        }
-
-        match &self.content[r][c] {
+    pub fn cell_content(&self, cell: Coordinate) -> char {
+        match &self.content[cell.row][cell.column] {
             CellContent::Ph1 => 'X',
             CellContent::Ph2 => 'O',
             CellContent::Nil => ' ',
@@ -37,9 +46,6 @@ impl Grid {
     }
 
     fn update_cell(&mut self, r: usize, c: usize, ph: CellContent) -> Result<(), &str> {
-        if (r > 2) || (c > 2) {
-            return Err("row or column index out of bound");
-        }
         if self.content[r][c] != CellContent::Nil {
             return Err("non empty cell");
         }
@@ -47,7 +53,7 @@ impl Grid {
         Ok(())
     }
 
-    pub fn player_move(&mut self, r: usize, c: usize, player_id: u32) -> Result<(), &str> {
+    pub fn player_move(&mut self, cell: Coordinate, player_id: u32) -> Result<(), &str> {
         if player_id > 1 {
             panic!("Invalid player id!");
         }
@@ -58,7 +64,7 @@ impl Grid {
             CellContent::Ph2
         };
 
-        self.update_cell(r, c, place_holder)?;
+        self.update_cell(cell.row, cell.column, place_holder)?;
         Ok(())
     }
 

@@ -4,10 +4,10 @@ pub mod ui;
 fn run_multiplayer() {
     let mut grid = content::Grid::new();
     let mut player_id = 0;
-    let mut pmove: (u32, u32);
+    let mut pmove;
 
     while grid.winner().is_none() {
-        ui::print_grid(&grid);
+        ui::display_grid(&grid);
 
         match ui::get_player_move(player_id) {
             Ok(m) =>  {pmove = m;}
@@ -17,7 +17,7 @@ fn run_multiplayer() {
             }
         }
 
-        if let Err(e) = grid.player_move(pmove.0 as usize, pmove.1 as usize, player_id) {
+        if let Err(e) = grid.player_move(pmove, player_id) {
             println!("Error updating grid: {}", e);
             continue;
         }
@@ -25,7 +25,7 @@ fn run_multiplayer() {
         player_id = 1-player_id;
     }
 
-    ui::print_grid(&grid);
+    ui::display_grid(&grid);
     ui::display_winner(grid.winner().unwrap()+1);
 }
 

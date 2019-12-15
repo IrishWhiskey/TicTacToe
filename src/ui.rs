@@ -1,6 +1,6 @@
 //!module that handles the ui of the game
-use crate::content::Grid;
 use std::io::{self, Write};
+use crate::content::{Grid, Coordinate};
 
 pub enum MenuChoice {
     SinglePlayer,
@@ -53,7 +53,7 @@ pub fn run_menu() -> MenuChoice {
     }
 }
 
-pub fn get_player_move(player_id: u32) -> Result<(u32, u32), &'static str> {
+pub fn get_player_move(player_id: u32) -> Result<Coordinate, &'static str> {
     if player_id > 1 {
         panic!("Invalid player id!");
     }
@@ -68,14 +68,14 @@ pub fn get_player_move(player_id: u32) -> Result<(u32, u32), &'static str> {
     io::stdout().flush().unwrap();
     c = read_index()?;
 
-    Ok((r, c))
+    Coordinate::new(r as usize, c as usize)
 }
 
 pub fn display_winner(winner: u32) {
     println!("The winner is player{}", winner);
 }
 
-pub fn print_grid(grid: &Grid)
+pub fn display_grid(grid: &Grid)
 {
     println!("");
     println!("    0   1   2  ");
@@ -83,7 +83,7 @@ pub fn print_grid(grid: &Grid)
     for i in 0..3 {
         print!("{} ", i);
         for j in 0..3 {
-            print!("| {} ", grid.cell_content(i, j));
+            print!("| {} ", grid.cell_content(Coordinate::new(i, j).unwrap()));
         }
         println!("|\n  +---+---+---+");
     }
