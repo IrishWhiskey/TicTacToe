@@ -4,7 +4,7 @@ pub mod player;
 
 fn run_multiplayer() {
     let mut grid = content::Grid::new();
-    let mut cur_player = player::Player::P1;
+    let mut cur_player = player::get_random_player();
     let mut pmove;
 
     while grid.winner().is_none() {

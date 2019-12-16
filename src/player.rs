@@ -1,5 +1,7 @@
 //!module that handles player
 
+use rand;
+
 #[derive(PartialEq, Copy, Clone)]
 pub enum Player {
     P1,
@@ -18,4 +20,12 @@ pub fn get_next_player(player: Player) -> Player {
         Player::P1 => Player::P2,
         Player::P2 => Player::P1,
     }
+}
+
+pub fn get_random_player() -> Player {
+    let x = rand::random::<u8>() % 2;
+    if x == 0 {
+        return Player::P1;
+    }
+    Player::P2
 }
