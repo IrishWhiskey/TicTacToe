@@ -30,11 +30,11 @@ pub fn get_random_player() -> Player {
     Player::P2
 }
 
-mod ai {
+pub mod ai {
     use super::Player;
     use crate::content::{Coordinate, Grid};
 
-    fn get_move_naive(grid: Grid) -> Coordinate {
+    fn get_move_naive(grid: &Grid) -> Coordinate {
         for i in 0..3 {
             for j in 0..3 {
                 let c = Coordinate::new(i, j).unwrap();
@@ -46,7 +46,7 @@ mod ai {
         panic!("Something went wrong deciding a move");
     }
 
-    pub fn get_move(grid: Grid, player: Player) -> Coordinate {
+    pub fn get_move(grid: &Grid, player: Player) -> Coordinate {
         get_move_naive(grid)
     }
 
@@ -60,7 +60,7 @@ mod ai {
             let mut g = Grid::new();
             g.player_move(&Coordinate::new(0, 0).unwrap(), Player::P1);
             g.player_move(&Coordinate::new(1, 1).unwrap(), Player::P2);
-            let c = get_move_naive(g);
+            let c = get_move_naive(&g);
             assert_eq!(c.row, 0);
             assert_eq!(c.column, 1);
         }

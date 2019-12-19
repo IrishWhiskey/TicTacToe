@@ -38,6 +38,10 @@ fn display_menu() {
     println!("3. Quit");
 }
 
+pub fn display_message(msg: &str) {
+    println!("{}", msg);
+}
+
 pub fn run_menu() -> MenuChoice {
     loop {
         display_menu();

@@ -21,9 +21,14 @@ fn make_user_move(grid: &mut content::Grid, user: player::Player) -> bool {
     true
 }
 
+fn make_ai_move(grid: &mut content::Grid, ai_player: player::Player){
+    &grid.player_move(&player::ai::get_move(grid, ai_player), ai_player).unwrap();
+}
+
 fn run_multiplayer() {
     let mut grid = content::Grid::new();
     let mut cur_player = player::get_random_player();
+    ui::display_message("MultiPlayer Game");
 
     while grid.winner().is_none() {
         ui::display_grid(&grid);
@@ -38,7 +43,28 @@ fn run_multiplayer() {
 }
 
 fn run_singleplayer() {
-    println!("SinglePlayer game...");
+    let mut grid = content::Grid::new();
+    let mut cur_player = player::get_random_player();
+    ui::display_message("SinglePlayer Game\nYou are Player2");
+
+    while grid.winner().is_none() {
+
+        match cur_player {
+            player::Player::P1 => {
+                make_ai_move(&mut grid, cur_player)
+            }
+            player::Player::P2 => {
+                ui::display_grid(&grid);
+                if !make_user_move(&mut grid, cur_player) {
+                    continue;
+                }
+            }
+        }
+        cur_player = player::get_next_player(cur_player);
+    }
+
+    ui::display_grid(&grid);
+    ui::display_winner(grid.winner().unwrap());
 }
 
 pub fn run()
