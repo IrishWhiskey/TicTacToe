@@ -2,28 +2,35 @@ pub mod ui;
 pub mod content;
 pub mod player;
 
+fn make_user_move(grid: &mut content::Grid, user: player::Player) -> bool {
+    let pmove;
+
+    match ui::get_player_move(user) {
+        Ok(m) =>  {pmove = m;}
+        Err(e) => {
+            println!("Error reading player move: {}", e);
+            return false;
+        }
+    }
+
+    if let Err(e) = &grid.player_move(&pmove, user) {
+        println!("Error updating grid: {}", e);
+        return false;
+    }
+
+    true
+}
+
 fn run_multiplayer() {
     let mut grid = content::Grid::new();
     let mut cur_player = player::get_random_player();
-    let mut pmove;
 
     while grid.winner().is_none() {
         ui::display_grid(&grid);
 
-        match ui::get_player_move(cur_player) {
-            Ok(m) =>  {pmove = m;}
-            Err(e) => {
-                println!("Error reading player move: {}", e);
-                continue;
-            }
+        if make_user_move(&mut grid, cur_player) {
+            cur_player = player::get_next_player(cur_player);
         }
-
-        if let Err(e) = grid.player_move(pmove, cur_player) {
-            println!("Error updating grid: {}", e);
-            continue;
-        }
-
-        cur_player = player::get_next_player(cur_player);
     }
 
     ui::display_grid(&grid);

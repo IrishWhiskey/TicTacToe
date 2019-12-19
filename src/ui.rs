@@ -84,7 +84,7 @@ pub fn display_grid(grid: &Grid)
     for i in 0..3 {
         print!("{} ", i);
         for j in 0..3 {
-            let cell = grid.cell_content(Coordinate::new(i, j).unwrap());
+            let cell = grid.cell_content(&Coordinate::new(i, j).unwrap());
             print!("| {} ", cell_to_symbol(cell));
         }
         println!("|\n  +---+---+---+");

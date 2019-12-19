@@ -9,11 +9,11 @@ pub enum MenuChoice {
 }
 
 pub struct Coordinate {
-    row: usize,
-    column: usize,
+    pub row: usize,
+    pub column: usize,
 }
 
-#[derive(PartialEq, Copy, Clone)]
+#[derive(PartialEq, Copy, Clone, Debug)]
 pub struct Cell(pub Option<Player>);
 
 pub struct Grid {
@@ -40,11 +40,11 @@ impl Grid {
         }
     }
 
-    pub fn cell_content(&self, cell: Coordinate) -> Cell {
+    pub fn cell_content(&self, cell: &Coordinate) -> Cell {
         (&self).content[cell.row][cell.column]
     }
 
-    pub fn player_move(&mut self, cell: Coordinate, player: Player) -> Result<(), &str> {
+    pub fn player_move(&mut self, cell: &Coordinate, player: Player) -> Result<(), &str> {
         if self.content[cell.row][cell.column].0.is_some() {
             return Err("non empty cell");
         }
@@ -124,42 +124,36 @@ impl Grid {
 
 #[cfg(test)]
 mod tests {
+    use crate::player::Player;
     use super::*;
 
     #[test]
     #[should_panic]
-    fn wrong_player_move() {
-        let mut g = Grid::new();
-        g.player_move(1, 2, 5);
-    }
-
-    #[test]
-    #[should_panic]
     fn wrong_cell_content() {
-        let mut g = Grid::new();
-        g.cell_content(1, 8);
+        let g = Grid::new();
+        g.cell_content(&Coordinate::new(1, 8).unwrap());
     }
 
     #[test]
     fn grid_test() {
         let mut g = Grid::new();
-        g.player_move(1, 2, 0);
-        assert_eq!('X', g.cell_content(1, 2));
+        g.player_move(&Coordinate::new(1, 2).unwrap(), Player::P1);
+        assert_eq!(Cell(Some(Player::P1)), g.cell_content(&Coordinate::new(1, 2).unwrap()));
     }
 
     #[test]
     fn no_winner() {
         let mut g = Grid::new();
-        g.player_move(1, 2, 0);
+        g.player_move(&Coordinate::new(1, 2).unwrap(), Player::P1);
         assert!(g.winner().is_none());
     }
 
     #[test]
     fn winner() {
         let mut g = Grid::new();
-        g.player_move(1, 0, 0);
-        g.player_move(1, 1, 0);
-        g.player_move(1, 2, 0);
-        assert_eq!(g.winner().unwrap(), 0);
+        g.player_move(&Coordinate::new(1, 0).unwrap(), Player::P1);
+        g.player_move(&Coordinate::new(1, 1).unwrap(), Player::P1);
+        g.player_move(&Coordinate::new(1, 2).unwrap(), Player::P1);
+        assert_eq!(g.winner().unwrap(), Player::P1);
     }
 }
