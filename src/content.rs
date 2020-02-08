@@ -13,6 +13,8 @@ pub struct Coordinate {
     pub column: usize,
 }
 
+///Represents cells of the grid
+///It contains the player who occupied the grid (None if cell is empty)
 #[derive(PartialEq, Copy, Clone, Debug)]
 pub struct Cell(pub Option<Player>);
 
@@ -33,6 +35,7 @@ impl Coordinate {
 }
 
 impl Grid {
+    ///Crates a new grid with empty cells
     pub fn new() -> Grid {
         let c = [[Cell(None); 3]; 3];
         Grid {
@@ -117,6 +120,7 @@ impl Grid {
         None
     }
 
+    ///Returns the winner
     pub fn winner(&self) -> Option<Player> {
         self.check()
     }

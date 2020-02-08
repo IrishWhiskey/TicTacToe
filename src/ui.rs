@@ -3,6 +3,7 @@ use std::io::{self, Write};
 use crate::content::*;
 use crate::player::{Player, get_player_id};
 
+///Reads index of a row or column
 fn read_index() -> Result<u32, &'static str> {
     let mut inp = String::new();
     if let Err(_) = io::stdin().read_line(&mut inp) {
@@ -42,6 +43,7 @@ pub fn display_message(msg: &str) {
     println!("{}", msg);
 }
 
+///Function that handles menu and returns player choice
 pub fn run_menu() -> MenuChoice {
     loop {
         display_menu();
@@ -52,6 +54,7 @@ pub fn run_menu() -> MenuChoice {
     }
 }
 
+///Gets the coordinates of player next move
 pub fn get_player_move(player: Player) -> Result<Coordinate, &'static str> {
     let r: u32;
     let c: u32;

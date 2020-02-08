@@ -30,10 +30,12 @@ pub fn get_random_player() -> Player {
     Player::P2
 }
 
+///Handles player ai
 pub mod ai {
     use super::Player;
     use crate::content::{Coordinate, Grid};
 
+    ///Returns coordinates of next empty cell
     fn get_move_naive(grid: &Grid) -> Coordinate {
         for i in 0..3 {
             for j in 0..3 {
@@ -46,6 +48,7 @@ pub mod ai {
         panic!("Something went wrong deciding a move");
     }
 
+    ///Returns ai next move
     pub fn get_move(grid: &Grid, player: Player) -> Coordinate {
         get_move_naive(grid)
     }

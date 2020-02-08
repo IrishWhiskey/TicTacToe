@@ -48,7 +48,6 @@ fn run_singleplayer() {
     ui::display_message("SinglePlayer Game\nYou are Player2");
 
     while grid.winner().is_none() {
-
         match cur_player {
             player::Player::P1 => {
                 make_ai_move(&mut grid, cur_player)
@@ -67,6 +66,7 @@ fn run_singleplayer() {
     ui::display_winner(grid.winner().unwrap());
 }
 
+///Main function called on execution
 pub fn run()
 {
     loop {
