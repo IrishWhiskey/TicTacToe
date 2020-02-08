@@ -56,6 +56,11 @@ impl Grid {
         self.content[cell.row][cell.column] = Cell(None);
     }
 
+    ///Check if cell is occupied by player
+    pub fn occupied_by_player(&self, cell: &Coordinate, player: Player) -> bool {
+        (&self).content[cell.row][cell.column].0 == Some(player)
+    }
+
     pub fn player_move(&mut self, cell: &Coordinate, player: Player) -> Result<(), &str> {
         if self.content[cell.row][cell.column].0.is_some() {
             return Err("non empty cell");

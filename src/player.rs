@@ -109,10 +109,24 @@ pub mod ai {
             return coord;
         }
 
-        //Always try to move in the middle cell
+        //Always to move in the middle cell
         let coord = Coordinate::new(1, 1).unwrap();
         if grid.cell_content(&coord).0.is_none() {
             return coord;
+        }
+
+        if grid.get_num_moves() == 3 {
+            //If player is getting into a trap move in a side cell
+            for i in 0..2 {
+                for j in 0..2 {
+                    let c = Coordinate::new(2*i, 2*j).unwrap();
+                    let cc = Coordinate::new((2*i+2)%4, (2*j+2)%4).unwrap();
+                    let enemy = get_next_player(player);
+                    if grid.occupied_by_player(&c, enemy) && grid.occupied_by_player(&cc, enemy) {
+                        return Coordinate::new(0, 1).unwrap();
+                    }
+                }
+            }
         }
 
         if let Some(coord) = get_opposite_corner(grid) {
