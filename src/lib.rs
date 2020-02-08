@@ -22,7 +22,9 @@ fn make_user_move(grid: &mut content::Grid, user: player::Player) -> bool {
 }
 
 fn make_ai_move(grid: &mut content::Grid, ai_player: player::Player){
-    &grid.player_move(&player::ai::get_move(grid, ai_player), ai_player).unwrap();
+    let ai_move = &player::ai::get_move(grid, ai_player);
+    ui::announce_move(ai_player, ai_move);
+    &grid.player_move(ai_move, ai_player).unwrap();
 }
 
 fn run_multiplayer() {

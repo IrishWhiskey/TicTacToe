@@ -70,6 +70,11 @@ pub fn get_player_move(player: Player) -> Result<Coordinate, &'static str> {
     Coordinate::new(r as usize, c as usize)
 }
 
+pub fn announce_move(ai_player: Player, coord: &Coordinate) {
+    let player_id = get_player_id(ai_player);
+    println!("Player{} moves to ({}, {})", player_id, coord.row, coord.column);
+}
+
 pub fn display_winner(player: Player) {
     let player_id = get_player_id(player);
     println!("The winner is Player{}", player_id);
