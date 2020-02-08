@@ -18,8 +18,10 @@ pub struct Coordinate {
 #[derive(PartialEq, Copy, Clone, Debug)]
 pub struct Cell(pub Option<Player>);
 
+#[derive(Clone)]
 pub struct Grid {
     content: [[Cell; 3]; 3],
+    pub num_moves: u32,
 }
 
 impl Coordinate {
@@ -40,11 +42,18 @@ impl Grid {
         let c = [[Cell(None); 3]; 3];
         Grid {
             content: c,
+            num_moves: 0,
         }
     }
 
+    ///Returns cell content
     pub fn cell_content(&self, cell: &Coordinate) -> Cell {
         (&self).content[cell.row][cell.column]
+    }
+
+    ///Makes cell empty
+    pub fn clear_cell(&mut self, cell: &Coordinate) {
+        self.content[cell.row][cell.column] = Cell(None);
     }
 
     pub fn player_move(&mut self, cell: &Coordinate, player: Player) -> Result<(), &str> {
@@ -53,6 +62,7 @@ impl Grid {
         }
 
         self.content[cell.row][cell.column].0 = Some(player);
+        self.num_moves += 1;
         Ok(())
     }
 

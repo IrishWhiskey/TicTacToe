@@ -32,7 +32,7 @@ pub fn get_random_player() -> Player {
 
 ///Handles player ai
 pub mod ai {
-    use super::Player;
+    use super::*;
     use crate::content::{Coordinate, Grid};
 
     ///Returns coordinates of next empty cell
@@ -48,9 +48,87 @@ pub mod ai {
         panic!("Something went wrong deciding a move");
     }
 
+    ///If player can win in one move, the function returns that move
+    fn get_last_move(mut grid: Grid, player: Player) -> Option<Coordinate> {
+        for i in 0..3 {
+            for j in 0..3 {
+                let c = Coordinate::new(i, j).unwrap();
+                if grid.cell_content(&c).0.is_none() {
+                    grid.player_move(&c, player).unwrap();
+                    if grid.winner() == Some(player) {
+                        return Some(c);
+                    }
+                    grid.clear_cell(&c);
+                }
+            }
+        }
+        None
+    }
+
+    ///If there is an occupied corner, the function returns the opposite one(if empty)
+    fn get_opposite_corner(grid: &Grid) -> Option<Coordinate> {
+        for i in 0..2 {
+            for j in 0..2 {
+                let c = Coordinate::new(2*i, 2*j).unwrap();
+                if grid.cell_content(&c).0.is_some() {
+                    let c = Coordinate::new((2*i+2)%4, (2*j+2)%4).unwrap();
+                    if grid.cell_content(&c).0.is_none() {
+                        return Some(c);
+                    }
+                }
+            }
+        }
+
+        None
+    }
+
+    ///Searches for an empty corner
+    fn get_empty_corner(grid: &Grid) -> Option<Coordinate> {
+        for i in 0..2 {
+            for j in 0..2 {
+                let c = Coordinate::new(2*i, 2*j).unwrap();
+                if grid.cell_content(&c).0.is_none() {
+                    return Some(c);
+                }
+            }
+        }
+
+        None
+    }
+
+    ///Tries to return best move
+    fn get_smart_move(grid: &Grid, player: Player) -> Coordinate {
+
+        //Try to win in one move
+        if let Some(coord) = get_last_move(grid.clone(), player) {
+            return coord;
+        }
+
+        //Block enemy from winning
+        if let Some(coord) = get_last_move(grid.clone(), get_next_player(player)) {
+            return coord;
+        }
+
+        //Always try to move in the middle cell
+        let coord = Coordinate::new(1, 1).unwrap();
+        if grid.cell_content(&coord).0.is_none() {
+            return coord;
+        }
+
+        if let Some(coord) = get_opposite_corner(grid) {
+            return coord;
+        }
+
+        if let Some(coord) = get_empty_corner(grid) {
+            return coord;
+        }
+
+        get_move_naive(grid)
+    }
+
     ///Returns ai next move
     pub fn get_move(grid: &Grid, player: Player) -> Coordinate {
-        get_move_naive(grid)
+        get_smart_move(grid, player)
     }
 
     #[cfg(test)]
