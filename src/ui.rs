@@ -75,9 +75,14 @@ pub fn announce_move(ai_player: Player, coord: &Coordinate) {
     println!("Player{} moves to ({}, {})", player_id, coord.row, coord.column);
 }
 
-pub fn display_winner(player: Player) {
-    let player_id = get_player_id(player);
-    println!("The winner is Player{}", player_id);
+pub fn display_winner(player: Option<Player>) {
+    match player {
+        Some(p) => {
+            let player_id = get_player_id(p);
+            println!("The winner is Player{}", player_id);
+        }
+        None => println!("It's a Tie!"),
+    }
 }
 
 fn cell_to_symbol(cell: Cell) -> char {

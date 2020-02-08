@@ -32,7 +32,7 @@ fn run_multiplayer() {
     let mut cur_player = player::get_random_player();
     ui::display_message("MultiPlayer Game");
 
-    while grid.winner().is_none() {
+    while grid.winner().is_none() && grid.get_num_moves() < 9 {
         ui::display_grid(&grid);
 
         if make_user_move(&mut grid, cur_player) {
@@ -41,7 +41,7 @@ fn run_multiplayer() {
     }
 
     ui::display_grid(&grid);
-    ui::display_winner(grid.winner().unwrap());
+    ui::display_winner(grid.winner());
 }
 
 fn run_singleplayer() {
@@ -49,7 +49,7 @@ fn run_singleplayer() {
     let mut cur_player = player::get_random_player();
     ui::display_message("SinglePlayer Game\nYou are Player2");
 
-    while grid.winner().is_none() {
+    while grid.winner().is_none()  && grid.get_num_moves() < 9 {
         match cur_player {
             player::Player::P1 => {
                 make_ai_move(&mut grid, cur_player)
@@ -65,7 +65,7 @@ fn run_singleplayer() {
     }
 
     ui::display_grid(&grid);
-    ui::display_winner(grid.winner().unwrap());
+    ui::display_winner(grid.winner());
 }
 
 ///Main function called on execution

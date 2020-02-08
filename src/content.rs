@@ -21,7 +21,7 @@ pub struct Cell(pub Option<Player>);
 #[derive(Clone)]
 pub struct Grid {
     content: [[Cell; 3]; 3],
-    pub num_moves: u32,
+    num_moves: u32,
 }
 
 impl Coordinate {
@@ -133,6 +133,10 @@ impl Grid {
     ///Returns the winner
     pub fn winner(&self) -> Option<Player> {
         self.check()
+    }
+
+    pub fn get_num_moves(&self) -> u32 {
+        self.num_moves
     }
 }
 
